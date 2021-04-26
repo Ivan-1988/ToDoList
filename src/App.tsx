@@ -15,23 +15,23 @@ export type FilterValuesType = 'all' | 'active' | 'completed'
 function App() {
 //BLL:
 //     console.log(v1())
-    const [tasks, setTasks] = useState <Array<TaskType>>([
+    const [tasks, setTasks] = useState<Array<TaskType>>([
         {id: v1(), title: 'HTML', isDone: true},
         {id: v1(), title: 'CSS', isDone: true},
         {id: v1(), title: 'React', isDone: false},
         {id: v1(), title: 'Water', isDone: false}
     ])
 
-    const [filter, setFilter] = useState <FilterValuesType>('all')
+    const [filter, setFilter] = useState<FilterValuesType>('all')
 
     function removeTask(taskID: string) {
-       const filteredTasks = tasks.filter(t => t.id !== taskID)
+        const filteredTasks = tasks.filter(t => t.id !== taskID)
         // console.log(tasks)
         setTasks(filteredTasks)
     }
 
-    function addTask(title: string){
-        const newTask: TaskType ={
+    function addTask(title: string) {
+        const newTask: TaskType = {
             id: v1(),
             title: title,
             isDone: false
@@ -39,7 +39,11 @@ function App() {
         setTasks([newTask, ...tasks])
     }
 
-    function changeFilter(value: FilterValuesType){
+    function changeTaskStatus(taskID: string, newIsDoneValue: boolean){
+        setTasks(tasks.map(t => (t.id === taskID ? {...t, isDone: newIsDoneValue} : t)))
+    }
+
+    function changeFilter(value: FilterValuesType) {
         setFilter(value)
     }
 
@@ -57,13 +61,15 @@ function App() {
 
     return (
         <div className="App">
-           <TodoList
-               title={'What to learn'}
-               tasks={getTasksForTodoList()}
-               addTask={addTask}
-               removeTask={removeTask}
-               changeFilter={changeFilter}
-           />
+            <TodoList
+                title={'What to learn'}
+                tasks={getTasksForTodoList()}
+                addTask={addTask}
+                removeTask={removeTask}
+                changeFilter={changeFilter}
+                filter={filter}
+                changeTaskStatus={changeTaskStatus}
+            />
         </div>
     );
 }
