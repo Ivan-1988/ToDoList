@@ -2,6 +2,8 @@ import React, {useState, KeyboardEvent, ChangeEvent} from 'react';
 import {FilterValuesType, TaskType} from "./App";
 import AddItemForm from "./AddItemForm";
 import EditableSpan from "./EditableSpan";
+import {IconButton, Button, Checkbox} from "@material-ui/core";
+import {Check, Delete} from "@material-ui/icons";
 
 type TodoListPropsType = {
     todoListID: string
@@ -19,53 +21,35 @@ type TodoListPropsType = {
 
 function TodoList(props: TodoListPropsType) {
     const {filter} = props
-    // const filter = props.filter
 
-/*    const [title, setTitle] = useState('')
-    const [error, setError] = useState<boolean>(false)*/
-    const tasksJSXElements = props.tasks.map( t => {
+    const tasksJSXElements = props.tasks.map(t => {
         const removeTask = () => props.removeTask(t.id, props.todoListID)
         const changeTaskStatus = (e: ChangeEvent<HTMLInputElement>) =>
             props.changeTaskStatus(t.id, e.currentTarget.checked, props.todoListID)
         const changeTaskTitle = (title: string) =>
             props.changeTaskTitle(t.id, title, props.todoListID)
-
+        const taskClasses : string = t.isDone ? 'is-done' : ''
         return (
-                <li className={t.isDone ? 'is-done' : ''}>
-                    <input
-                        onChange={changeTaskStatus }
-                        type="checkbox"
+            <li key={t.id}>
+                <span className={taskClasses}>
+                    <Checkbox
+                        color={'primary'}
                         checked={t.isDone}
+                        onChange={changeTaskStatus}
                     />
-                    {/*<span>{t.title}</span>*/}
                     <EditableSpan title={t.title} changeTitle={changeTaskTitle}/>
-                    <button onClick={ removeTask }>x</button>
-                </li>
+                </span>
+
+                <IconButton
+                    onClick={removeTask}
+                    color={'secondary'}
+                >
+                    <Delete/>
+                </IconButton>
+            </li>
         )
     })
 
-
-
- /*   const onClickAddTask = () => {
-        const trimmedTitle = title.trim()
-        if (trimmedTitle) {
-            props.addTask(trimmedTitle, props.todoListID)
-        } else {
-            setError(true)
-        }
-        setTitle('')
-
-    }*/
-
-/*    const onKeyPressAddTask = (e: KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter'){
-            onClickAddTask()
-        }
-    }*/
-/*    const onChangeTitle = (e: ChangeEvent<HTMLInputElement>) => {
-        setTitle(e.currentTarget.value)
-        setError(false)
-    }*/
 
     const onClickAllFilter = () => props.changeFilter('all', props.todoListID)
     const onClickActiveFilter = () => props.changeFilter('active', props.todoListID)
@@ -73,40 +57,44 @@ function TodoList(props: TodoListPropsType) {
     const onClickremoveTodoList = () => props.removeTodoList(props.todoListID)
     const addTask = (title: string) => props.addTask(title, props.todoListID)
     const changeTodoListTitle = (title: string) => props.changeTodoListTitle(title, props.todoListID)
-/*    const errorMessage = error
-        ? <div className={'error-message'}>Title is required!</div>
-        : null*/
-
 
     return (
         <div>
             <h3>
                 <EditableSpan title={props.title} changeTitle={changeTodoListTitle}/>
-                <button onClick={onClickremoveTodoList}>X</button>
+                {/*<button onClick={onClickremoveTodoList}>X</button>*/}
+                <IconButton onClick={onClickremoveTodoList} color={'secondary'}>
+                    <Delete/>
+                </IconButton>
             </h3>
             <AddItemForm addItem={addTask}/>
-{/*            <div>
-                <input className={error ? 'error' : ''}
-                    value={title} //https://learn-reactjs.ru/basics/forms
-                    onChange={onChangeTitle}
-                    onKeyPress={onKeyPressAddTask}
-                />
-                <button onClick={onClickAddTask}>+</button>
-                {errorMessage}
-            </div>*/}
-            <ul>
+
+            <ul style={{listStyle: 'none', paddingLeft: '0px'}}>
                 {tasksJSXElements}
             </ul>
             <div>
-                <button className={filter === 'all' ? 'active-filter' : ''}
-                        onClick={onClickAllFilter}>
-                    All</button>
-                <button className={filter === 'active' ? 'active-filter' : ''}
-                        onClick={onClickActiveFilter}>
-                    Active</button>
-                <button className={filter === 'completed' ? 'active-filter' : ''}
-                        onClick={onClickCompletedFilter}>
-                    Completed</button>
+                <Button
+                    style={{marginLeft: '3px'}}
+                    size={'small'}
+                    variant={filter === 'all' ? 'contained' : 'outlined'}
+                    color={'primary'}
+
+                    onClick={onClickAllFilter}>
+                    All</Button>
+                <Button
+                    style={{marginLeft: '3px'}}
+                    size={'small'}
+                    variant={filter === 'active' ? 'contained' : 'outlined'}
+                    color={'primary'}
+                    onClick={onClickActiveFilter}>
+                    Active</Button>
+                <Button
+                    style={{marginLeft: '3px'}}
+                    size={'small'}
+                    variant={filter === 'completed' ? 'contained' : 'outlined'}
+                    color={'primary'}
+                    onClick={onClickCompletedFilter}>
+                    Completed</Button>
             </div>
         </div>
     )
